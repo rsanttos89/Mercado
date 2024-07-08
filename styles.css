@@ -102,6 +102,10 @@ form button:hover {
 }
 
 /* Lista de Produtos */
+#list {
+    height: 100%;
+    oveflow: auto;
+}
 .list-container {
     padding-bottom: 8px;
     border-bottom: #c6c6c6 1px dotted;
