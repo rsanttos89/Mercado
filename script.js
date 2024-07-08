@@ -2,6 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("productForm");
     const productList = document.getElementById("list");
     const totalPriceElement = document.getElementById("totalPrice");
+    const priceInput = document.getElementById("price");
+
+    // Aplicar a máscara de moeda no campo de preço
+    priceInput.addEventListener("input", (event) => {
+        event.target.value = formatCurrency(event.target.value);
+    });
 
     // Carregar produtos armazenados no localStorage ao carregar a página
     loadProducts();
@@ -12,27 +18,39 @@ document.addEventListener("DOMContentLoaded", () => {
         // Coletar dados do formulário
         const description = document.getElementById("description").value.trim();
         const amount = parseInt(document.getElementById("amount").value.trim());
-        const price = parseFloat(document.getElementById("price").value.trim());
+        const price = parseFloat(removeCurrencyMask(document.getElementById("price").value.trim()));
 
         if (description && !isNaN(amount) && !isNaN(price)) {
-        // Criar objeto de produto
-        const product = { description, amount, price };
+            // Criar objeto de produto
+            const product = { description, amount, price };
 
-        // Salvar produto no localStorage
-        saveProduct(product);
+            // Salvar produto no localStorage
+            saveProduct(product);
 
-        // Atualizar lista de produtos
-        addProductToList(product);
+            // Atualizar lista de produtos
+            addProductToList(product);
 
-        // Atualizar o total
-        updateTotal();
+            // Atualizar o total
+            updateTotal();
 
-        // Limpar o formulário
-        form.reset();
+            // Limpar o formulário
+            form.reset();
         } else {
-        alert("Por favor, preencha todos os campos corretamente.");
+            alert("Por favor, preencha todos os campos corretamente.");
         }
     });
+
+    function formatCurrency(value) {
+        value = value.replace(/\D/g, "");
+        value = (value / 100).toFixed(2) + "";
+        value = value.replace(".", ",");
+        value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+        return "R$" + value;
+    }
+
+    function removeCurrencyMask(value) {
+        return value.replace(/\D/g, "") / 100;
+    }
 
     function loadProducts() {
         const products = JSON.parse(localStorage.getItem("products")) || [];
@@ -58,17 +76,17 @@ document.addEventListener("DOMContentLoaded", () => {
         detailsDiv.className = "flex row";
 
         const detailsSpan = document.createElement("span");
-        detailsSpan.textContent = `${product.amount} x R$${product.price.toFixed(2)}`;
+        detailsSpan.textContent = `${product.amount} x ${formatCurrency(product.price.toFixed(2))}`;
 
         const totalSpan = document.createElement("span");
         totalSpan.style.textAlign = "right";
-        totalSpan.textContent = `R$${(product.amount * product.price).toFixed(2)}`;
+        totalSpan.textContent = formatCurrency((product.amount * product.price).toFixed(2));
 
         const removeButton = document.createElement("button");
         removeButton.textContent = "Remover";
         removeButton.className = "remove-button";
         removeButton.addEventListener("click", () => {
-        removeProduct(index);
+            removeProduct(index);
         });
 
         detailsDiv.appendChild(detailsSpan);
@@ -84,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateTotal() {
         const products = JSON.parse(localStorage.getItem("products")) || [];
         const total = products.reduce((sum, product) => sum + (product.amount * product.price), 0);
-        totalPriceElement.textContent = `R$${total.toFixed(2)}`;
+        totalPriceElement.textContent = formatCurrency(total.toFixed(2));
     }
 
     function removeProduct(index) {
