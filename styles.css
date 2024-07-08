@@ -36,6 +36,7 @@ hr {
 
 /* Layout do Main */
 main {
+    height: 100vh;
     padding: 16px;
     max-width: 480px;
     border-radius: 10px;
