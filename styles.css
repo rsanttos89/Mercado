@@ -13,11 +13,7 @@
 }
 body {
     background-color: #ffffff;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    padding: 0px 8px;
 }
 
 .flex {
@@ -41,10 +37,14 @@ main {
     max-width: 480px;
     border-radius: 10px;
     align-items: flex-start;
+    background-color: #ffffff;
 }
 
 /* Media Query para modo paisagem */
 @media (orientation: landscape) {
+    body {
+        padding: 16px 8px;
+    }
     main {
         background-color: #ffffff;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
