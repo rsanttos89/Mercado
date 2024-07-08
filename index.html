@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js" defer></script>
+    <title>Mercado</title>
+</head>
+<body>
+  <div class="flex">
+    <main class="flex">
+      <header class="flex">
+        <span>Total</span>
+        <h1>R$0,00</h1>
+      </header>
+
+      <hr />
+
+      <form action="" method="post">
+        <label for="description">Description</label>
+        <input type="text" name="description" id="description" placeholder="..." />
+
+        <div class="flex box-inputs">
+          <div class="flex">
+            <label for="amount">QTD.</label>
+            <input type="text" name="amount" id="amount" placeholder="..."/>
+          </div>
+
+          <div class="flex">
+            <label for="price">Preço</label>
+            <input type="text" name="price" id="price" placeholder="..." />
+          </div>
+        </div>
+
+        <button class="flex" type="submit">add product</button>
+      </form>
+
+      <hr />
+
+      <h2>produtos no carrinho</h2>
+      <section class="flex" id="list">
+        <div class="flex list-container">
+          <span>Description</span>
+          <div class="flex row">
+            <span>01 x R$0.00</span>
+            <span style="text-align: right;">R$0.00</span>
+          </div>
+        </div>
+
+        <div class="flex list-container">
+          <span>Description</span>
+          <div class="flex row">
+            <span>01 x R$0.00</span>
+            <span style="text-align: right;">R$0.00 </span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
