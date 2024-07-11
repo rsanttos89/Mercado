@@ -11,8 +11,11 @@
   <div class="flex">
     <main class="flex">
       <header class="flex header">
-        <span>Total</span>
-        <h1 id="totalPrice">R$0,00</h1>
+        <div class="flex">
+          <span>Total</span>
+          <h1 id="totalPrice">R$0,00</h1>
+        </div>
+        <button id="clearCartButton" class="flex">&#128465;</button>
       </header>
 
       <hr />
@@ -22,14 +25,14 @@
         <input type="text" name="description" id="description" placeholder="Descrição do produto..." />
 
         <div class="flex box-inputs">
-          <div class="flex">
-            <label for="amount">Quantidade</label>
-            <input type="number" name="amount" id="amount" placeholder="1" min="1"/>
+          <div class="flex" style="max-width: 100px;">
+            <label for="amount">Qtd.</label>
+            <input type="number" name="amount" id="amount" value="1" min="1"/>
           </div>
 
           <div class="flex">
             <label for="price">Preço</label>
-            <input type="text" name="price" id="price" placeholder="0,00" />
+            <input type="text" name="price" id="price" placeholder="0,00"/>
           </div>
         </div>
 
@@ -42,6 +45,8 @@
       <section class="flex" id="list">
         <!-- Lista dos produtos será inserida aqui -->
       </section>
+      
     </main>
   </div>
 </body>
+</html>

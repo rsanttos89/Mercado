@@ -3,10 +3,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const productList = document.getElementById("list");
     const totalPriceElement = document.getElementById("totalPrice");
     const priceInput = document.getElementById("price");
+    const clearCartButton = document.getElementById("clearCartButton");
 
     // Aplicar a máscara de moeda no campo de preço
     priceInput.addEventListener("input", (event) => {
-        event.target.value = formatCurrency(event.target.value);
+        let value = event.target.value.replace(/\D/g, "");
+        event.target.value = formatCurrency(value);
     });
 
     // Carregar produtos armazenados no localStorage ao carregar a página
@@ -20,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const amount = parseInt(document.getElementById("amount").value.trim());
         const price = parseFloat(removeCurrencyMask(document.getElementById("price").value.trim()));
 
-        if (description && !isNaN(amount) && !isNaN(price)) {
+        if (description && !isNaN(amount) && amount >= 1 && !isNaN(price)) {
             // Criar objeto de produto
             const product = { description, amount, price };
 
@@ -35,21 +37,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Limpar o formulário
             form.reset();
+
+            // Resetar o valor do amount para 1
+            document.getElementById("amount").value = 1;
         } else {
             alert("Por favor, preencha todos os campos corretamente.");
         }
     });
 
+    clearCartButton.addEventListener("click", () => {
+        if (confirm("Você realmente quer limpar o carrinho?")) {
+            clearCart();
+        }
+    });
+
     function formatCurrency(value) {
-        value = value.replace(/\D/g, "");
-        value = (value / 100).toFixed(2) + "";
-        value = value.replace(".", ",");
+        value = (value / 100).toFixed(2).replace(".", ",");
         value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-        return "R$" + value;
+        return "R$ " + value;
     }
 
     function removeCurrencyMask(value) {
-        return value.replace(/\D/g, "") / 100;
+        return parseFloat(value.replace(/[\D]+/g, "")) / 100;
     }
 
     function loadProducts() {
@@ -76,11 +85,11 @@ document.addEventListener("DOMContentLoaded", () => {
         detailsDiv.className = "flex row";
 
         const detailsSpan = document.createElement("span");
-        detailsSpan.textContent = `${product.amount} x ${formatCurrency(product.price.toFixed(2))}`;
+        detailsSpan.textContent = `${product.amount} x ${formatCurrency((product.price * 100).toFixed(2))}`;
 
         const totalSpan = document.createElement("span");
         totalSpan.style.textAlign = "right";
-        totalSpan.textContent = formatCurrency((product.amount * product.price).toFixed(2));
+        totalSpan.textContent = formatCurrency((product.amount * product.price * 100).toFixed(2));
 
         const removeButton = document.createElement("button");
         removeButton.textContent = "Remover";
@@ -96,13 +105,14 @@ document.addEventListener("DOMContentLoaded", () => {
         productItem.appendChild(detailsDiv);
         productItem.appendChild(removeButton);
 
-        productList.appendChild(productItem);
+        // Inserir o produto no início da lista
+        productList.insertBefore(productItem, productList.firstChild);
     }
 
     function updateTotal() {
         const products = JSON.parse(localStorage.getItem("products")) || [];
         const total = products.reduce((sum, product) => sum + (product.amount * product.price), 0);
-        totalPriceElement.textContent = formatCurrency(total.toFixed(2));
+        totalPriceElement.textContent = formatCurrency((total * 100).toFixed(2));
     }
 
     function removeProduct(index) {
@@ -117,6 +127,12 @@ document.addEventListener("DOMContentLoaded", () => {
         loadProducts(); // Recarregar os produtos atualizados
 
         // Atualizar o total
+        updateTotal();
+    }
+
+    function clearCart() {
+        localStorage.removeItem("products");
+        productList.innerHTML = '';
         updateTotal();
     }
 });
