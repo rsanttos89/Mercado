@@ -4,41 +4,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalPriceElement = document.getElementById("totalPrice");
     const priceInput = document.getElementById("price");
     const clearCartButton = document.getElementById("clearCartButton");
+    const generatePdfButton = document.getElementById("generatePdf");
 
-    // Aplicar a máscara de moeda no campo de preço
     priceInput.addEventListener("input", (event) => {
         let value = event.target.value.replace(/\D/g, "");
         event.target.value = formatCurrency(value);
     });
 
-    // Carregar produtos armazenados no localStorage ao carregar a página
     loadProducts();
 
     form.addEventListener("submit", (event) => {
-        event.preventDefault(); // Evitar o comportamento padrão de submissão do formulário
+        event.preventDefault();
 
-        // Coletar dados do formulário
         const description = document.getElementById("description").value.trim();
         const amount = parseInt(document.getElementById("amount").value.trim());
         const price = parseFloat(removeCurrencyMask(document.getElementById("price").value.trim()));
 
         if (description && !isNaN(amount) && amount >= 1 && !isNaN(price)) {
-            // Criar objeto de produto
             const product = { description, amount, price };
-
-            // Salvar produto no localStorage
             saveProduct(product);
-
-            // Atualizar lista de produtos
             addProductToList(product);
-
-            // Atualizar o total
             updateTotal();
-
-            // Limpar o formulário
             form.reset();
-
-            // Resetar o valor do amount para 1
             document.getElementById("amount").value = 1;
         } else {
             alert("Por favor, preencha todos os campos corretamente.");
@@ -49,6 +36,23 @@ document.addEventListener("DOMContentLoaded", () => {
         if (confirm("Você realmente quer limpar o carrinho?")) {
             clearCart();
         }
+    });
+
+    generatePdfButton.addEventListener("click", () => {
+        document.getElementById("productForm").style.display = "none";
+        document.getElementById("clearCartButton").style.display = "none";
+        generatePdfButton.style.display = "none";
+
+        html2canvas(document.querySelector("main")).then(canvas => {
+            const imgData = canvas.toDataURL("image/png");
+            const pdf = new jsPDF();
+            pdf.addImage(imgData, "PNG", 0, 0);
+            pdf.save("carrinho.pdf");
+
+            document.getElementById("productForm").style.display = "flex";
+            document.getElementById("clearCartButton").style.display = "flex";
+            generatePdfButton.style.display = "flex";
+        });
     });
 
     function formatCurrency(value) {
@@ -105,7 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
         productItem.appendChild(detailsDiv);
         productItem.appendChild(removeButton);
 
-        // Inserir o produto no início da lista
         productList.insertBefore(productItem, productList.firstChild);
     }
 
@@ -117,16 +120,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function removeProduct(index) {
         let products = JSON.parse(localStorage.getItem("products")) || [];
-        products.splice(index, 1); // Remover o produto pelo índice
+        products.splice(index, 1);
 
-        // Atualizar o localStorage
         localStorage.setItem("products", JSON.stringify(products));
 
-        // Atualizar a lista de produtos exibidos
-        productList.innerHTML = ''; // Limpar a lista existente
-        loadProducts(); // Recarregar os produtos atualizados
-
-        // Atualizar o total
+        productList.innerHTML = '';
+        loadProducts();
         updateTotal();
     }
 
