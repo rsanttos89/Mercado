@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="theme-color" content="#fff" />
+    <link rel="apple-touch-icon" href="../public/assets/icons-pwa/logo192.png" />
+    <link rel="manifest" href="manifest.json" />
+
     <link rel="stylesheet" href="./styles.css" />
     <script src="./script.js" defer></script>
     <title>Mercado</title>
@@ -48,5 +53,20 @@
       
     </main>
   </div>
+
+  <script>
+    /** -------------------------- SERVICE WORKER ------------------------------------------- */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('../service_worker.js').then(function(registration) {
+        // Registration was successful
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function(err) {
+        // registration failed :(
+        console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
